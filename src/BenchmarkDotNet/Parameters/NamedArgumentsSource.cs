@@ -23,6 +23,13 @@ namespace BenchmarkDotNet.Parameters
             return this;
         }
 
+        [PublicAPI]
+        public NamedArgumentsSource<T> Add(T value)
+        {
+            arguments.Add(new NamedArgument(value, null));
+            return this;
+        }
+
         public IEnumerator<NamedArgument> GetEnumerator() => arguments.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

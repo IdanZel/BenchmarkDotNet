@@ -65,7 +65,12 @@ namespace BenchmarkDotNet.Parameters
             if (SourceCodeHelper.IsCompilationTimeConstant(value))
                 return new ParameterInstance(parameterDefinitions[argumentIndex], value, summaryStyle);
 
-            return new ParameterInstance(parameterDefinitions[argumentIndex], new SmartArgument(parameterDefinitions, value, source, sourceIndex, argumentIndex), summaryStyle);
+
+            SmartArgument argument = value is NamedArgument namedArgument
+                ? new NamedSmartArgument(parameterDefinitions, namedArgument.Value, source, sourceIndex, argumentIndex, namedArgument.Name)
+                : new SmartArgument(parameterDefinitions, value, source, sourceIndex, argumentIndex);
+
+            return new ParameterInstance(parameterDefinitions[argumentIndex], argument, summaryStyle);
         }
     }
 
