@@ -87,7 +87,7 @@ namespace BenchmarkDotNet.Parameters
 
         public object Value { get; }
 
-        public string DisplayText => Value is Array array ? ArrayParam.GetDisplayString(array) : Value.ToString();
+        public virtual string DisplayText => Value is Array array ? ArrayParam.GetDisplayString(array) : Value.ToString();
 
         public string ToSourceCode()
         {
@@ -102,6 +102,19 @@ namespace BenchmarkDotNet.Parameters
             // we do something like enumerable.ElementAt(sourceIndex)[argumentIndex];
             return $"{cast}BenchmarkDotNet.Parameters.ParameterExtractor.GetParameter({source.Name}{callPostfix}, {sourceIndex}){indexPostfix};";
         }
+    }
+
+    internal class NamedSmartArgument : SmartArgument
+    {
+        private readonly string name;
+
+        public NamedSmartArgument(ParameterDefinition[] parameterDefinitions, object value, MemberInfo source, int sourceIndex, int argumentIndex, string name)
+            : base(parameterDefinitions, value, source, sourceIndex, argumentIndex)
+        {
+            this.name = name;
+        }
+
+        public override string DisplayText => name ?? base.DisplayText;
     }
 
     internal class SmartParameter : IParam
